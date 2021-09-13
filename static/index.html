@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui"
+          charset="UTF-8">
+    <title>阴阳师悬赏任务最小攻打副本次数v1</title>
+</head>
+<body>
+<div id="app">
+    <v-app>
+        <v-app-bar app>阴阳师悬赏任务最小攻打副本次数v1</v-app-bar>
+        <v-main>
+            <v-container fluid>
+                <v-card class="mx-auto"
+                        outlined>
+                    <v-subheader>选择可用的副本类型</v-subheader>
+                    <v-row>
+                        <v-col cols="12"
+                               sm="4"
+                               md="4">
+                            <v-checkbox
+                                    class="px-2"
+                                    label="探索1-28"
+                                    v-model="hasDiscovery"
+                                    disabled
+                            ></v-checkbox>
+                        </v-col>
+                        <v-col cols="12"
+                               sm="4"
+                               md="4">
+                            <v-checkbox
+                                    class="px-2"
+                                    label="妖气封印"
+                                    v-model="hasMonster"
+                            ></v-checkbox>
+                        </v-col>
+                        <v-col cols="12"
+                               sm="4"
+                               md="4">
+                            <v-checkbox
+                                    class="px-2"
+                                    label="秘闻5-10层"
+                                    v-model="hasHighLevel"
+                            ></v-checkbox>
+                        </v-col>
+                    </v-row>
+
+                    <v-row>
+                        <v-col
+                                cols="12"
+                                sm="4"
+                                md="4">
+                            <v-checkbox
+                                    class="px-2"
+                                    label="御魂副本1-10层"
+                                    v-model="hasSnake"
+                                    disabled
+                            ></v-checkbox>
+                        </v-col>
+                        <v-col cols="12"
+                               sm="4"
+                               md="4">
+                            <v-checkbox
+                                    class="px-2"
+                                    label="式神挑战"
+                                    v-model="hasChallenge"
+                                    disabled
+                            ></v-checkbox>
+                        </v-col>
+                    </v-row>
+                </v-card>
+            </v-container>
+            <v-container fluid>
+                <v-card class="mx-auto"
+                        outlined>
+                    <v-subheader>添加一个悬赏任务</v-subheader>
+
+                    <v-autocomplete class="px-2"
+                                    v-if="loaded"
+                                    v-model="selected"
+                                    :items="monsters"
+                                    label="请选择妖怪"
+                                    outlined
+                                    dense>
+
+                    </v-autocomplete>
+
+                    <v-text-field class="px-2"
+                                  v-model="newTargetNum"
+                                  label="妖怪数量"
+                                  type="number"
+                                  hint="[1,20]"
+                                  outlined
+                                  dense
+                    ></v-text-field>
+                    <v-card-actions>
+                        <v-btn elevation="2" v-on:click="addNewTarget">添加</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-container>
+            <v-container fluid>
+                <v-card
+                        class="mx-auto"
+                        outlined
+                >
+                    <v-list>
+                        <v-subheader>已选择</v-subheader>
+                        <v-list-item two-line
+                                     v-for="(value,name,index) in target"
+                                     v-bind:key="index">
+                            <v-list-item-content>
+                                <v-list-item-title>悬赏妖怪: {{name}}</v-list-item-title>
+                                <v-list-item-subtitle>数量: {{value}}</v-list-item-subtitle>
+
+                            </v-list-item-content>
+                            <v-list-item-icon>
+                                <v-btn
+                                        elevation="2"
+                                        dark
+                                        v-on:click="remove(name)">
+                                    <v-icon dark left>
+                                        mdi-minus-circle
+                                    </v-icon>
+                                    取消
+                                </v-btn>
+                            </v-list-item-icon>
+                        </v-list-item>
+                        <v-card-actions>
+                            <v-btn block elevation="2" v-on:click="submit">提交</v-btn>
+                        </v-card-actions>
+                    </v-list>
+                </v-card>
+            </v-container>
+
+            <v-container fluid v-if="hasResult">
+                <v-subheader v-if="errored">没有合适的方案！请重新输入正确的悬赏任务</v-subheader>
+
+                <v-card class="mx-auto"
+                        outlined
+                        v-else>
+                    <v-subheader>最优方案</v-subheader>
+                    <v-list>
+                        <v-list-item two-line
+                                     v-for="(n, index) in resultSize"
+                                     v-bind:key="index">
+                            <v-list-item-content>
+                                <v-list-item-title>副本: {{resultInfo['dungeons'][index]}}</v-list-item-title>
+                                <v-list-item-subtitle>次数: {{resultInfo['playTimes'][index]}}</v-list-item-subtitle>
+                            </v-list-item-content>
+                        </v-list-item>
+
+                    </v-list>
+                    <v-subheader>最小攻打次数:{{resultInfo['minimal']}}</v-subheader>
+                </v-card>
+            </v-container>
+
+        </v-main>
+        <v-footer app></v-footer>
+    </v-app>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script type="text/javascript" src="/static/js/main.js"></script>
+</body>
+</html>
