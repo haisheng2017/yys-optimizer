@@ -84,3 +84,13 @@ Xi 为整数解
 
 # 应用地址（需要VPN）
 https://yitiaoxiangsugou.tk
+
+# 部署
+前端 静态文件
+
+Vue + Vuetify + axios + HTML5
+
+后端 python3.8
+
+nginx + uWSGI + Flask
+
