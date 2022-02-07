@@ -133,7 +133,6 @@ dmypy.json
 static/css
 static/*.ico
 .idea
-*.csv
 data.py
 *.zip
 *.ipynb*
