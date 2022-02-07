@@ -83,7 +83,8 @@ Xi 为整数解
 
 
 # 应用地址（需要VPN）
-https://yitiaoxiangsugou.tk
+~~https://yitiaoxiangsugou.tk~~
+（阴阳师悬赏系统加入了怪物信息提示，比较方便，无奈家境贫寒，这个地址就先释放了）
 
 # 部署
 前端 静态文件
