@@ -85,6 +85,7 @@ str_array Monster {'A','B'....} 假设共有 i 个
 str_array Level {'W','X','Y','Z','W'','Z''.....} 假设共有 j 个
 
 Monster\[0\] 代表 妖怪A
+
 Level\[1\] 代表 副本X
 
 ## 数据
